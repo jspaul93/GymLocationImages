@@ -25,7 +25,7 @@ gyms.forEach(async gym => {
 			`size=${width}x${height}&` +
 			`scale=${scale}&` +
 			`zoom=${zoom}&` +
-			`markers=color:blue|${latitude},${longitude}&` +
+			`markers=color:red|${latitude},${longitude}&` +
 			`key=${googleKey}&`;
 
 	https.get(url, result => {
