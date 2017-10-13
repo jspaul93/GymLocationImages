@@ -21,14 +21,21 @@ gyms.forEach(async gym => {
 		scale = settings.scale,
 		zoom = settings.zoom,
 		googleKey = googleSettings.google_api_key,
-		url = 'https://maps.googleapis.com/maps/api/staticmap?' +
+		path = '/maps/api/staticmap?' +
 			`size=${width}x${height}&` +
 			`scale=${scale}&` +
 			`zoom=${zoom}&` +
 			`markers=color:red|${latitude},${longitude}&` +
-			`key=${googleKey}&`;
+			`key=${googleKey}&`,
+		getOptions = {
+			hostname: 'maps.googleapis.com',
+			path: path,
+			headers: {
+				'Connection': 'keep-alive'
+			}
+		};
 
-	https.get(url, result => {
+	https.get(getOptions, result => {
 		const data = [];
 
 		result
