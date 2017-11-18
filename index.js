@@ -1,6 +1,6 @@
-const https = require('https'),
-	fs = require('fs'),
-	gyms = require('./gyms'),
+const fs = require('fs'),
+	request = require('then-request'),
+	gyms = require('PgP-Data/data/gyms'),
 	googleSettings = require('./google-settings'),
 	settings = require('./settings');
 
@@ -8,11 +8,7 @@ if (!fs.existsSync('./images')) {
 	fs.mkdirSync('./images');
 }
 
-function sleep(ms) {
-	return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-gyms.forEach(async gym => {
+gyms.forEach(gym => {
 	const id = gym.gymId,
 		latitude = gym.gymInfo.latitude,
 		longitude = gym.gymInfo.longitude,
@@ -26,29 +22,8 @@ gyms.forEach(async gym => {
 			`scale=${scale}&` +
 			`zoom=${zoom}&` +
 			`markers=color:red|${latitude},${longitude}&` +
-			`key=${googleKey}&`,
-		getOptions = {
-			hostname: 'maps.googleapis.com',
-			path: path,
-			headers: {
-				'Connection': 'keep-alive'
-			}
-		};
+			`key=${googleKey}`;
 
-	https.get(getOptions, result => {
-		const data = [];
-
-		result
-			.on('data', chunk => data.push(chunk))
-			.on('end', () => {
-				const buffer = Buffer.concat(data);
-				fs.writeFileSync(`./images/${id}.png`, buffer, 'binary');
-			})
-			.on('error', err => {
-				console.log("Error during HTTP request");
-				console.log(err.message);
-			});
-	});
-
-	await sleep(100);
+	request('GET', `https://maps.googleapis.com${path}`)
+		.done(result => fs.writeFileSync(`./images/${id}.png`, result.getBody()), 'binary');
 });

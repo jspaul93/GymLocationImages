@@ -4,7 +4,8 @@
   "description": "Pokemon Go Pittsburgh gym gym location image downloader",
   "main": "index.js",
   "dependencies": {
-    "npm": "^5.4.2"
+    "PgP-Data": "github:Googer/PgP-Data",
+    "then-request": "^4.1.0"
   },
   "scripts": {
     "start": "node index.js",
