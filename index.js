@@ -8,22 +8,24 @@ if (!fs.existsSync('./images')) {
 	fs.mkdirSync('./images');
 }
 
-gyms.forEach(gym => {
-	const id = gym.gymId,
-		latitude = gym.gymInfo.latitude,
-		longitude = gym.gymInfo.longitude,
-		width = settings.width,
-		height = settings.height,
-		scale = settings.scale,
-		zoom = settings.zoom,
-		googleKey = googleSettings.google_api_key,
-		path = '/maps/api/staticmap?' +
-			`size=${width}x${height}&` +
-			`scale=${scale}&` +
-			`zoom=${zoom}&` +
-			`markers=color:red|${latitude},${longitude}&` +
-			`key=${googleKey}`;
+gyms
+	.filter(gym => !fs.existsSync(`./images/${gym.gymId}.png`))
+	.forEach(async gym => {
+		const id = gym.gymId,
+			latitude = gym.gymInfo.latitude,
+			longitude = gym.gymInfo.longitude,
+			width = settings.width,
+			height = settings.height,
+			scale = settings.scale,
+			zoom = settings.zoom,
+			googleKey = googleSettings.google_api_key,
+			path = '/maps/api/staticmap?' +
+				`size=${width}x${height}&` +
+				`scale=${scale}&` +
+				`zoom=${zoom}&` +
+				`markers=color:red|${latitude},${longitude}&` +
+				`key=${googleKey}`;
 
-	request('GET', `https://maps.googleapis.com${path}`)
-		.done(result => fs.writeFileSync(`./images/${id}.png`, result.getBody()), 'binary');
-});
+		await request('GET', `https://maps.googleapis.com${path}`)
+			.done(result => fs.writeFileSync(`./images/${id}.png`, result.getBody()), 'binary');
+	});
