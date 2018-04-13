@@ -24,8 +24,10 @@ gyms
 				`scale=${scale}&` +
 				`zoom=${zoom}&` +
 				`markers=color:red|${latitude},${longitude}&` +
-				`key=${googleKey}`;
-
+				`key=AIzaSyAZ8PXTu7jvOxo6b_ZkguRfur7n-i-dxg4`;
+			
+			console.log(path);
+			
 		await request('GET', `https://maps.googleapis.com${path}`)
 			.done(result => fs.writeFileSync(`./images/${id}.png`, result.getBody()), 'binary');
 	});
